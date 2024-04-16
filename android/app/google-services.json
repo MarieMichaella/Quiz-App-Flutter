@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "165643279360",
+    "project_id": "melodic-argon-418122",
+    "storage_bucket": "melodic-argon-418122.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165643279360:android:f9687f4b5f5f3f9f178ce5",
+        "android_client_info": {
+          "package_name": "com.example.quizapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165643279360-e9f6i99ddqs6o9t02ir9s5hva0m3akbm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.quizapp",
+            "certificate_hash": "41535b357ae3c590ad89adef2863bcc4ab62ef77"
+          }
+        },
+        {
+          "client_id": "165643279360-bb1gkatn3o16pennkbufep52l9g8sd67.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAPz5tijqndiu2YOJNcEtbMrnQZYjfAOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165643279360-bb1gkatn3o16pennkbufep52l9g8sd67.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
