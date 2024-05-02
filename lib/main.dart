@@ -46,7 +46,7 @@
 // class MyApp extends StatelessWidget {
 //   const MyApp({Key? key}) : super(key: key);
 
-//   @override
+//   @overridetranslucent,translucent,
 //   Widget build(BuildContext context) {
 //     return Consumer<ThemeProvider>(
 //       builder: (context, themeProvider, child) {
@@ -68,6 +68,7 @@
 import 'package:flutter/material.dart';
 import 'package:quizapp/compassScreen.dart';
 import 'package:quizapp/newhome.dart';
+import 'package:quizapp/session_timeout.dart';
 import 'package:quizapp/somehome.dart';
 import 'package:quizapp/stepcounter.dart';
 import 'CalculatorView.dart';
@@ -83,6 +84,7 @@ import 'package:quizapp/notification_controller.dart';
 import 'package:quizapp/firstpage.dart';
 import 'package:quizapp/lightsensor.dart';
 import 'package:quizapp/googlemapspage.dart';
+import 'package:quizapp/session_timeout.dart';
 
 void main() async{
     WidgetsFlutterBinding.ensureInitialized();
@@ -136,9 +138,15 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
+  
+@override
+Widget build(BuildContext context) {
+  return SessionTimeoutListener(
+    duration: const Duration(seconds: 20),
+    onTimeout: () {
+      print("Time Out");
+    }, 
+    child: Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
           title: 'Navigator',
@@ -155,9 +163,41 @@ class _MyAppState extends State<MyApp> {
           // home: StepCounterScreen()
         );
       },
+    ),
+  );
+}
+
+
+
+}
+
+
+class NavigationWrapper extends StatefulWidget {
+  final Widget child;
+
+  const NavigationWrapper({required this.child});
+
+  @override
+  _NavigationWrapperState createState() => _NavigationWrapperState();
+}
+
+class _NavigationWrapperState extends State<NavigationWrapper> {
+  void handleTimeout() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => SignInScreen()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SessionTimeoutListener(
+      duration: const Duration(seconds: 60),
+      onTimeout: handleTimeout,
+      child: widget.child,
     );
   }
 }
+
 
 
 

@@ -432,6 +432,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:quizapp/homescreen.dart';
 import 'package:quizapp/user_answer.dart';
 import 'CalculatorView.dart';
 import 'Aboutscreen.dart';
@@ -780,7 +781,7 @@ items: <BottomNavigationBarItem>[
           if (index == 0) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Home(user: widget.user)),
+              MaterialPageRoute(builder: (context) => HomeScreen(user: widget.user)),
             );
           } else if (index == 1) {
             Navigator.push(

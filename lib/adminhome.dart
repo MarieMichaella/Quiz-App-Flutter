@@ -27,6 +27,7 @@ import 'package:quizapp/question_db.dart';
 import 'package:quizapp/answers_db.dart';
 import 'package:quizapp/model/syncModel.dart';
 
+
 class AdminHome extends StatefulWidget {
   
 
@@ -43,6 +44,103 @@ class _AdminHomeState extends State<AdminHome> {
   String _connectionStatus = 'Unknown';
   int _currentIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    listenForConnectivityChanges();
+  }
+
+void _syncAllUnsyncedDataAuto() async {
+  // This method will be called automatically whenever there is a change in connection status
+  void _onConnectivityChanged(bool isConnected) async {
+    if (isConnected) {
+      try {
+        await SyncService().syncUnsyncedAnswers();
+        await SyncService().syncUnsyncedQuestions();
+        await SyncService().syncUnsyncedQuizzes();
+        List<Quiz> updatedQuizzes = await QuizDB().fetchUnsyncedQuizzes();
+        for (Quiz quiz in updatedQuizzes) {
+          await SyncService().syncUpdatedQuizzes(quiz);
+        }
+
+        List<Question> updatedQuestions = await QuestionDB().fetchUnsyncedQuestions();
+        for (Question question in updatedQuestions) {
+          await SyncService().syncUpdatedQuestions(question);
+        }
+        
+        await SyncService().syncUnsyncedUserAnswers();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Synced all unsynced data with Firestore',
+              style: TextStyle(fontSize: 16.0, color: Colors.white),
+            ),
+            backgroundColor: Color(0xFF5271FF),
+            elevation: 8.0,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            margin: EdgeInsets.all(16.0),
+            duration: Duration(seconds: 3),
+          ),
+        );
+
+        // Clear sync status for all synced data
+        await AnswerDB().clearSyncStatus();
+        await QuestionDB().clearSyncStatus();
+        await QuizDB().clearSyncStatus();
+      } catch (error) {
+        print('Error syncing unsynced data: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Error syncing unsynced data',
+              style: TextStyle(fontSize: 16.0, color: Colors.white),
+            ),
+            backgroundColor: Color(0xFF5271FF),
+            elevation: 8.0,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            margin: EdgeInsets.all(16.0),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'No internet connection. Cannot sync data.',
+            style: TextStyle(fontSize: 16.0, color: Colors.white),
+          ),
+          backgroundColor: Color(0xFF5271FF),
+          elevation: 8.0,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          margin: EdgeInsets.all(16.0),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
+
+  // Initial check for connection status
+  bool isConnected = await InternetConnectionChecker().hasConnection;
+  _onConnectivityChanged(isConnected);
+
+  // Subscribe to connection changes
+  InternetConnectionChecker().onStatusChange.listen((status) {
+    _onConnectivityChanged(status == InternetConnectionStatus.connected);
+  });
+
+}
 
 void _syncAllUnsyncedData() async {
   bool isConnected = await InternetConnectionChecker().hasConnection;
@@ -123,6 +221,13 @@ void _syncAllUnsyncedData() async {
   }
 }
 
+void listenForConnectivityChanges() {
+  InternetConnectionChecker().onStatusChange.listen((status) {
+    if (status == InternetConnectionStatus.connected) {
+      _syncAllUnsyncedData();
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {

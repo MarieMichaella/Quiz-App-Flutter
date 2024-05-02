@@ -141,8 +141,8 @@ class GoogleMapPage extends StatefulWidget {
 }
 
 class _GoogleMapPageState extends State<GoogleMapPage> {
-  static const googlePlex = LatLng(37.422, -122.084);
-  static const mountainView = LatLng(37.3861, -122.0839);
+  static const googlePlex = LatLng(-2.074773, 30.087836);
+  static const mountainView = LatLng(-2.074773, 30.087836);
   late Location location = Location();
   LatLng? currentPosition;
 

@@ -34,13 +34,23 @@ class _SessionTimeoutListenerState extends State<SessionTimeoutListener> {
 
   @override
   void dispose() {
-    
+    if(_timer != null) {
+      _timer?.cancel();
+      _timer = null;
+    }
     super.dispose();
-
   }
  
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (event) {
+        _startTimer();
+      },
+      child: widget.child,
+    );
+    
   }
 }
